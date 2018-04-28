@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Document</title>
+    <style>
+    *{
+        margin:0;
+        padding:0;
+    }
+    li{
+        list-style:none;
+    }
+    .video{
+        height:190px;
+        width:240px;
+        margin:10px auto 0;
+        overflow:hidden;
+    }
+    .video_list{
+        position:relative;
+    }
+    .video_list img{
+        position:absolute;
+        opacity:0;
+        left:0;
+    }
+    .video_list a:first-of-type img{
+        opacity:1;
+        left:0;
+    }
+    .play{
+        height:70px;
+        width:70px;
+        margin-top:35px;
+        margin-left:85px;
+        background:url('images/hbwside.png') -100px -100px no-repeat;
+        z-index:10;
+        position:absolute;
+}
+    .video_btn{
+        height:40px;
+        width:240px;
+        position:absolute;
+        top:150px;
+
+    }
+    .video_btn_lis{
+        float:left;
+        margin-left:15px;
+        margin-top:15px;
+    }
+    .video_btn_lis li{
+        float:left;
+        height:8px;
+        width:8px;
+        background:url('images/hbwmain.png') -100px -50px no-repeat;
+        margin-left:8px;
+    }
+    .video_btn_lis li.video_on{
+        background-position:-124px -50px;
+    }
+    .video_btn span{
+        display:inline-block;
+        height:17px;
+        width:17px;
+        float:right;
+
+    }
+    .video_paging_nex{
+        background:url('images/hbwmain.png') -174px -50px no-repeat;
+        margin:15px 15px 0 5px;
+    }
+    .video_paging_pre{
+        margin-top:15px;
+        background:url('images/hbwmain.png') -150px -50px no-repeat;
+    }
+
+    </style>
+</head>
+<body>
+<div class="video">
+    <div class="video_list">
+        <div class="play"></div>
+        <a href="javascript:void(0);">
+            <img src="images/video/1.jpg" alt="" />
+        </a>
+        <a href="javascript:void(0);">
+            <img src="images/video/2.jpg" alt="" />
+        </a>
+        <a href="javascript:void(0);">
+            <img src="images/video/3.jpg" alt="" />
+        </a>
+        <a href="javascript:void(0);">
+            <img src="images/video/4.jpg" alt="" />
+        </a>
+        <a href="javascript:void(0);">
+            <img src="images/video/5.jpg" alt="" />
+        </a>
+        <a href="javascript:void(0);">
+            <img src="images/video/6.jpg" alt="" />
+        </a>
+        <a href="javascript:void(0);">
+            <img src="images/video/7.jpg" alt="" />
+        </a>
+        <a href="javascript:void(0);">
+            <img src="images/video/8.jpg" alt="" />
+        </a>
+    </div><!--video_list-->
+    <div class="video_btn">
+        <ul class='video_btn_lis'>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul><!--video_btn_lis-->
+        <span class='video_paging_nex'></span>
+        <span class='video_paging_pre'></span>
+    </div><!--video_btn-->
+</div><!-- video -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    $(function(){
+        var videoIndex=0;
+        var $video_img=$('.video_list img');
+        var $video_li=$('.video_btn_lis li');
+        $video_li.eq(videoIndex).addClass('video_on');
+
+        $('.video_paging_nex').on('click',function(){
+            $video_img.eq(videoIndex).css('left',0);
+            $video_li.eq(videoIndex).addClass('video_on');
+            videoIndex++;
+            if(videoIndex==8)videoIndex=0;
+            $video_img.eq(videoIndex).css('left','240px');
+
+            videoIndex--;
+
+            $video_img.eq(videoIndex).animate({left:'-=240px',opacity:0},300,function(){
+                $(this).css('left','240px');});
+            $video_li.eq(videoIndex).removeClass('video_on');
+            videoIndex++;
+            if(videoIndex==8)videoIndex=0;
+            $video_img.eq(videoIndex).animate({
+                left:'-=240px',
+                opacity:1},300);
+            $video_li.eq(videoIndex).addClass('video_on');
+        });
+
+        $('.video_paging_pre').on('click',function(){
+            $video_img.eq(videoIndex).css('left',0);
+            $video_li.eq(videoIndex).addClass('video_on');
+            videoIndex--;
+            if(videoIndex==-1)videoIndex=7;
+            $video_img.eq(videoIndex).css('left','-240px');
+
+            videoIndex++;
+            if(videoIndex==8)videoIndex=0;
+
+            $video_img.eq(videoIndex).animate({left:'+=240px',opacity:0},300,function(){
+                $(this).css('left','-240px');
+            });
+            $video_li.eq(videoIndex).removeClass('video_on');
+            videoIndex--;
+            if(videoIndex==-1)videoIndex=7;
+
+            $video_img.eq(videoIndex).animate({
+                left:'+=240px',
+                opacity:1},300);
+            $video_li.eq(videoIndex).addClass('video_on');
+        });
+    })
+
+</script>
+</body>
+</html>

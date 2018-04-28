@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            vertical-align:baseline;
+            /* 输入框外边框 */
+            outline:0;
+        }
+        #mainbox{
+            width:500px;
+            height:600px;
+            background-color:pink;
+            position:relative;
+            overflow:hidden;
+            margin:50px auto;
+
+        }
+        #content{
+            position:absolute;
+            background-color:skyblue;
+            top:0;
+            padding:10px;
+            transition:top 0.1s linear;
+        }
+        .thumb{
+
+
+        }
+    </style>
+</head>
+<body>
+
+
+<div id="mainbox">
+<!-- 通过在标签上添加tabIndex属性使content盒子具有输入框的获取焦点，失去焦点的能力 -->
+    <div id="content" tabIndex="1">
+        <h2>座头鲸</h2>
+        <p>座头鲸（学名：Megaptera novaeangliae,又名humpback whale），其“座头”之名源于日文“座头”，意为“琵琶”，指鲸背部的形状。为热带暖海性鲸类。身体较短而宽，一般长达13～15米。座头鲸以其跃出水面姿势、超长的前翅与复杂的叫声而闻名。活动时多一双一对活动，性情温顺，有洄游习性，惟游泳速度较慢。主食为小甲壳类和群游性小型鱼类。</p>
+
+        <h2>嫉妒</h2>
+        <p>本词条由“科普中国”百科科学词条编写与应用工作项目 审核 。妒是指人们为竞争一定的权益，对相应的幸运者或潜在的幸运者怀有的一种冷漠、贬低、排斥、或者是敌视的心理状态，故一旦放任即可能产生嫉妒心，它让人感受到难过的滋味，严重时，人会产生恨的情感，切记一旦嫉妒心产生一定要将其克服才行。 </p>
+
+        <h2>蛤蚧</h2>
+        <p>蛤蚧又称大壁虎、仙蟾，台湾称为大守宫，主要分布于亚洲北回归线附近的亚热带地区，包括中国、越南、泰国和老挝。蛤蚧多栖息在悬岩峭壁的洞缝，个别也居住在树洞里。穴居的洞隙不大，身躯刚好能在洞内自由行动；遇敌即能甩尾逃脱，于事后长回，甚至其遇敌或捕获猎物时会对之紧咬不放。洞隙形状各异，一般洞宽15-30厘米，高3-6厘米，深度不等，有的可达数米之深。在野外常单独或几条栖息一处。蛤蚧喜欢干燥，在低洼或石山下部很难看到蛤蚧的踪迹。</p>
+        <h2>马鹿</h2>
+        <p>马鹿（学名：Cervus elaphus）是仅次于驼鹿的大型鹿类，共有24个亚种，因为体形似骏马而得名，身体呈深褐色，背部及两侧有一些白色斑点。雄性有角，一般分为6叉，最多8个叉，茸角的第二叉紧靠于眉叉。夏毛较短，没有绒毛，一般为赤褐色，背面较深，腹面较浅，故有“赤鹿”之称。马鹿生活于高山森林或草原地区。喜欢群居。夏季多在夜间和清晨活动，冬季多在白天活动。善于奔跑和游泳。以各种草、树叶、嫩枝、树皮和果实等为食，喜欢舔食盐碱。9-10月份发情交配，孕期8个多月，每胎1仔。</p>
+    </div>
+
+</div>
+<script>
+
+
+addScroll('mainbox','content');
+
+
+
+function addScroll(mainbox,content){
+
+var mainbox=document.getElementById("mainbox");
+var content=document.getElementById("content");
+
+
+
+
+var drag=-1;
+var stopSelect=[];
+stopSelect.push("-moz-user-select");
+stopSelect.push("-webkit-user-select");
+stopSelect.push("-ms-user-select");
+stopSelect.push("-o-user-select");
+stopSelect.push("user-select");
+
+// 兼容所有浏览器，一进来所有浏览器的content中的文字都禁止选中
+for(var i=0;i<stopSelect.length;i++){
+    content.style[stopSelect[i]]="none";
+}
+
+
+
+    // 添加事件
+    function addEvent(Element,type,handler){
+        if (type.substring(0,2)=="on")
+        {
+            type=type.substring(2);
+        }
+        if(Element.attachEvent){
+            Element.attachEvent("on"+type,handler);
+        }else{
+            Element.addEventListener(type,handler,false);
+        }
+
+    }
+
+
+    function mouseWheel(Element,handler){
+
+    // 鼠标滚轮事件,只能通过addEventListener或者attachEvent来添加才有效果
+        addEvent(Element,"mousewheel",function(e){
+          var data= getWheelDalta(e);
+          // console.log(data);
+          handler(data);
+        });
+
+        // 火狐滚轮事件与IE，Chrome不同，需要兼容
+        addEvent(Element,"Dommousescroll",function(e){
+          var data= getWheelDalta(e);
+          handler(data);
+
+        });
+        // 获取滚动方向，火狐浏览器的获取方式为event.detail
+        function getWheelDalta(event){
+            event=event||window.event;
+            // 阻止默认事件行为。比如一个a标签，本来点击的时候是可以跳转的，但是如果设置了preventDefault的话，再点击这个标签它就不会跳转了。但是要注意，这个preventDefault是要通过事件对象来获取的。也就是
+            // e=e||window.event;
+            // e.preventDefault=false;
+
+            // 阻止浏览器系统滚动条的滚动，但是存在兼容性问题
+            // preventDefault: IE9+，Chrome，Firefox
+            // window.event.returnValue:IE 10以下
+        event.preventDefault ? event.preventDefault(): window.event.returnValue=false;
+        // IE和Chrome中，使wheel.Delta的值取反，Firefox中event.detail值为3，乘40之后才和前面的值增量相同
+        return event.wheelDelta ? -event.wheelDelta : event.detail*40;
+        }
+
+    }
+
+
+
+
+    // 获取最终呈现的样式，存在兼容性问题currentStyle：IE
+    function getStyle(Element,attr){
+        return Element.currentStyle ? Element.currentStyle[attr]:getComputedStyle(Element)[attr];
+        }
+
+
+
+mouseWheel(mainbox);
+
+
+
+
+// 创建滚动条的元素
+var track=document.createElement("div");
+var thumb=document.createElement("div");
+
+// 将滑块添加到导轨中
+track.appendChild(thumb);
+
+
+thumb.className="thumb";
+
+// 在mainbox中添加元素track
+mainbox.appendChild(track);
+
+
+// 调整滚动条样式
+// transition:不支持没有值变化的属性
+thumb.style.cssText="width:18px;position:absolute;top:0;background-color:#333;border-radius:10px;transition:top 0.1s linear; ";
+
+track.style.cssText="width:18px;position:absolute;right:0;top:0;background-color:#ccc;";
+// 导轨高度就是大盒子的总高度，要注意这个高度与大盒子在可视区域的高度是不同的
+track.style.height=mainbox.offsetHeight+"px";
+
+// 内容宽度，在有导轨的情况下要减去导轨宽度和padding值
+var padding=parseInt(getStyle(content,"padding-left"))+parseInt(getStyle(content,"padding-right"));
+var trackwidth=parseInt(track.style.width);
+content.style.width=(content.offsetWidth-trackwidth-padding)+"px";
+
+
+// 计算滚动条高度
+// 滚动条高度/导轨高度=可视区域文字高度/文字总高 度
+var thumbLen=(mainbox.clientHeight /content.offsetHeight)*mainbox.offsetHeight;
+
+// 如果滑块已经大于可视区域高度，说明内容没有超出
+if(thumbLen>mainbox.clientHeight){
+    // 隐藏导轨
+    track.style.display="none";
+    // 内容宽度还原
+    content.style.width=content.offsetWidth+trackwidth+'px';
+}else{
+
+thumb.style.height=thumbLen+"px";
+}
+
+// 让content能够获取到焦点
+content.setAttribute("tabIndex","1");
+
+
+// 在内容区域内左键按下可以选中文字
+content.onfocus=function(){
+    for (var i=0;i<stopSelect.length;i++){
+        content.style[stopSelect[i]]="";
+    }
+}
+
+// 失去焦点
+content.onblur=function(){
+    for(var i=0;i<stopSelect.length;i++){
+       thumb.style[stopSelect[i]]=track.style[stopSelect[i]]=content.style[stopSelect[i]]="none";
+    }
+    // 清除用户在内容上选中的文字。涉及兼容性问题
+    window.getSelection ? window.getSelection().removeAllRanges():document.selection.empty();
+}
+
+
+
+thumb.onmousedown=function(e){
+    e=e||event;
+    // 初始导轨距离定位父级的距离
+    var init_thumbTop=thumb.offsetTop;
+
+    // 初始的坐标
+    var init_y=e.clientY;
+
+    document.onmousemove=function(e){
+        e=e||event;
+        // 获取变化量 此处的e.clientY为移动后的坐标
+        var changY=e.clientY-init_y;
+        // 移动后的top值
+        var top=changY+init_thumbTop;
+
+        // 判断边界
+        if(top>mainbox.offsetHeight-thumb.offsetHeight){
+            top=track.offsetHeight-thumb.offsetHeight;
+        }
+        if(top<=0)top=0;
+
+        thumb.style.top=top+"px";
+
+        // 让内容跟随滑块一起移动
+        // 滑块往下滚动的值/可视区域高度=内容往上移动的长度/内容总高度
+        content.style.top=-top*content.offsetHeight/mainbox.offsetHeight+"px";
+        drag=top;
+    }
+
+}
+
+
+document.onmouseup=function(){
+    document.onmousemove=null;
+}
+
+
+
+// 点击导轨移动
+track.onmousedown=function(e){
+e=e||event;
+// 获取当前网页滚动的高度,如果文档声明中没有第一句<!DOCTYPE html>就使用document.body.scrollTop，如果有就用document.documentElement.scrollTop
+var pageTop=document.documentElement.scrollTop ?document.documentElement.scrollTop:document.body.scrollTop;
+// console.log(pageTop);
+var hide=pageTop-mainbox.offsetTop;
+// 点击的可视区域Y坐标+被网页卷进去的部分，减去一半是为了让导轨在点击的时候整好停在中间位置
+var top=e.clientY+hide-thumb.offsetHeight/2;
+
+if(top<=0)top=0;
+if(top>=track.offsetHeight-thumb.offsetHeight){
+    top=track.offsetHeight-thumb.offsetHeight;
+}
+
+// 只有在导轨上点击才会使滑块移动
+var targetElement=e.target||e.srcElement;
+if(targetElement!==thumb){
+thumb.style.top=top+"px";
+
+// 内容一起滑动
+content.style.top=-top*content.offsetHeight/mainbox.offsetHeight+"px";
+ drag=top;
+
+}
+}
+thumb.onmouseover=function(){
+    this.style.backgroundColor="rgba(0,0,0,0.3)";
+
+}
+thumb.onmouseout=function(){
+    this.style.backgroundColor="rgb(102,102,102)";
+}
+
+
+
+
+var scrollSign=0;
+var _top=0;
+
+mouseWheel(mainbox,function(data){
+    scrollSign+=data;
+
+    if(drag>=0){
+
+
+        scrollSign=drag*12+data;
+
+
+        _top=scrollSign/12;
+        drag=-1;
+    }else{
+        _top=scrollSign/12;
+
+    }
+
+
+
+    if(_top<=0)
+        {_top=0;scrollSign=0;}
+    if(_top>=mainbox.offsetHeight-thumb.offsetHeight){
+        _top=mainbox.offsetHeight-thumb.offsetHeight;
+        scrollSign=(mainbox.offsetHeight-thumb.offsetHeight)*12;
+    }
+    thumb.style.top=_top+"px";
+    content.style.top=-_top*content.offsetHeight/mainbox.offsetHeight+"px";
+});
+
+}
+</script>
+
+</body>
+</html>

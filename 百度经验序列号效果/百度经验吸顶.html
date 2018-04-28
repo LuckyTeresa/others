@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            font-size:16px;
+        }
+        li{
+            list-style:none;
+        }
+        a{
+            text-decoration:none;
+            color:#333;
+        }
+        i{
+            font-style:normal;
+            font-size:18px;
+        }
+
+        .wrap{
+            width:768px;
+            margin:0 auto;
+
+        }
+        .title{
+            height:951px;
+            background:url('title.png');
+        }
+        .content-title{
+            font-size:22px;
+            color:#333;
+            font-weight:normal;
+            border-bottom:1px solid #e5e5e5;
+            padding:6px;
+        }
+        .main{
+            margin-top:15px;
+        }
+        .main li{
+            border-left:2px dotted #e5e5e5;
+            margin-left:16px;
+            position:relative;
+            padding-left:35px;
+            padding-bottom:35px;
+
+            /* margin-top:10px; */
+        }
+        .main li i{
+            position:absolute;
+            left:-16px;
+            top:0;
+            width:32px;
+            height:32px;
+            border-radius:50%;
+            background-color:#41AB49;
+            color:#fff;
+            text-align:center;
+            line-height:32px;
+
+        }
+        .main li p{
+            line-height:28px;
+        }
+        .main li img{
+            display:block;
+            padding:10px 0;
+        }
+        .main li:last-child{
+            padding-bottom:0;
+        }
+        .end-wrap{
+            height:20px;
+            position:relative;
+        }
+        .end{
+            position:absolute;
+            top:0;
+            left:-52px;
+            color:#333;
+            text-align:center;
+        }
+        .sorption{
+            width:100%;
+            height:42px;
+            position:fixed;
+            top:0;
+            background:#fbfbfb url('sorption.png') center 0 no-repeat;
+            border:1px solid #bbb;
+            border-left:0;
+            border-right:0;
+            box-shadow:0 0 4px #ccc;
+            z-index:3;
+            display:none;
+        }
+        .step{
+            position:fixed;
+            top:44px;
+            left:50%;
+            margin-left:-383px;
+        }
+        .step li{
+            width:32px;
+            height:34px;
+            border-radius:50%;
+            background-color:#C0C0C0;
+            color:#fff;
+            text-align:center;
+            line-height:32px;
+            display:none;
+            cursor:pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+
+        }
+        .step li:hover,.step li.on{
+            background-color:#41AB49;
+        }
+        .footer{
+            width:717px;
+            height:1000px;
+            background:url('footer.png') center 0 no-repeat;
+            margin-top:20px;
+        }
+    </style>
+</head>
+<body>
+<div class="sorption"></div>
+<div class="wrap">
+    <div class="title"></div>
+    <div class="content">
+        <h2 class='content-title'>方法/步骤</h2>
+        <ul class='main'>
+            <li>
+                <i class="icon-num">1</i>
+                <p>先放油，加入红糖，熬至起沫，加肉炒出油后，加料酒等作料，煸炒出香味。</p>
+                <img src="1.png" alt="" />
+            </li>
+            <li>
+                <i class="icon-num">2</i>
+                <p>在锅中加入开水，大火炖2-3分钟。</p>
+                <img src="2.png" alt="" />
+                <img src="6.jpg" alt="" />
+            </li>
+            <li>
+                <i class="icon-num">3</i>
+                <p>大火烧制后改小火，慢炖2-3小时。</p>
+                <img src="3.png" alt="" />
+                <img src="7.jpg" alt="" />
+            </li>
+            <li>
+                <i class="icon-num">4</i>
+                <p>盖上锅盖，小火焖40分钟左右至汁收干即可。</p>
+                <img src="4.png" alt="" />
+                <img src="8.jpg" alt="" />
+                <img src="10.jpg" alt="" />
+            </li>
+            <li>
+                <i class="icon-num">5</i>
+                <p>最后大火收汁，加味精出锅，即成。注 （加盐增加鲜味）。</p>
+                <img src="5.png" alt="" />
+                <img src="9.jpg" alt="" />
+                <img src="7.jpg" alt="" />
+                <div class="end-wrap">
+                    <span class='end'>END</span>
+                </div>
+            </li>
+
+        </ul>
+        <ul class='step'>
+            <li><i>1</i></li>
+            <li ><i>2</i></li>
+            <li><i>3</i></li>
+            <li><i>4</i></li>
+            <li><i>5</i></li>
+        </ul>
+    </div>
+    <div class="footer"></div>
+
+</div>
+<script src='https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js'>
+</script>
+<script>
+    $(function(){
+        $step=$('.step li');
+        $sorption=$('.sorption');
+        $icon=$('.main .icon-num');
+
+        $(window).on('scroll',function(){
+            var nowTop=$(this).scrollTop();
+            var index=0;
+            // 顶部的吸顶效果
+            if(nowTop>35){
+                $sorption.show();
+            }else{
+                $sorption.hide();
+            }
+
+
+
+            $icon.each(function(i,Elem){
+                var $this=$(this);
+                //   第i个元素距离网页顶部的距离 - 网页滚动的高度
+                // = 这个元素距离浏览器窗口顶部的高度
+                // = 顶部吸顶的高度+当前icon索引*icon高度
+                var target=$this.offset().top-nowTop;
+                if(target<(44+i*34)){
+                    $step.eq(i).show().addClass('on').siblings().removeClass('on');
+                    // 注意icon不能用display none，如果设置成这个，后面就获取不到this.offset().top了
+                    $this.css('opacity',0);
+
+                    $step.each(function(i,Elem){
+                        var $stepParent=$step.parent();
+                        var $iconParent=$icon.eq(-1).parent('li');
+// step的父元素距离页面顶部的高度+step中的第i个距离父元素顶部的高度
+// 最后一个icon的父元素距离页面顶部的高度+这个父元素的高度
+                        var now=$stepParent.offset().top+$stepParent.height();
+                        var maxH=$iconParent.offset().top+$iconParent.height();
+                        // console.log($stepParent.offset().top)
+                        // console.log($stepParent.height())
+                        if(now>maxH) $(this).hide();
+                    })
+
+                }else{
+                    $step.eq(i).hide();
+                    $this.css('opacity',1);
+                }
+            })
+
+
+        }).trigger('scroll');
+        $step.on('click',function(){
+            var i=$(this).index();
+            $('body,html').stop().animate({
+                scrollTop:$icon.eq(i).offset().top-(44+i*32)
+            },500)
+        })
+
+    })
+
+</script>
+
+</body>
+</html>

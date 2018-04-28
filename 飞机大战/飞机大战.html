@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            font-size:100%;
+        }
+        li{
+            list-style-type:none;
+        }
+        a{
+            text-decoration:none;
+        }
+        #wrap{
+            width:500px;
+            height:600px;
+            border:10px solid #ccc;
+            margin:20px auto 0;
+            position: relative;
+            font-size:32px;
+            font-family:'Microsoft Yahei',sans-serif;
+            text-align:center;
+            overflow:hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select:none ;
+            user-select:none;
+            text-align:center;
+        }
+        #wrap h1{
+            font-size:32px;
+            font-family:'Microsoft Yahei',sans-serif;
+            text-align:center;
+            color:#fff;
+            padding:60px 0;
+        }
+        .diff , .restart{
+            width:150px;
+            height:50px;
+            background-color:#fff;
+            line-height:50px;
+            border-radius:5px;
+            font-size:16px;
+            font-weight:bold;
+            margin:25px auto;
+            cursor:pointer;
+            transition:background-color .2s linear ;
+        }
+        .diff:hover , .restart:hover{
+            background-color:orange;
+            color:blue;
+        }
+        .plane{
+            width:88px;
+            height:99px;
+            background:url('3.jpg') 0px -180px;
+            position: relative;
+            left:0;
+            top:0;
+            z-index:2;
+        }
+        .enemy{
+            width:94px;
+            height:98px;
+            background:url('enemy.png') no-repeat;
+            position:absolute;
+            z-index:2;
+
+        }
+
+        .bullet{
+            width:38px;
+            height:40px;
+            background:url('bullet1.png') no-repeat;
+            position: absolute;
+            left:0;
+            top:0;
+            z-index:2;
+        }
+        .score{
+            position:absolute;
+            top:0;
+            left:0;
+        }
+        .score_info{
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        window.onload=function(){
+            Game.run();
+        }
+        var Game={
+            // 入口函数
+            run:function(){
+                var wrap=document.createElement("div");
+                wrap.id="wrap";
+                document.body.style.backgroundColor="#222";
+                document.body.appendChild(wrap);
+                this.init(wrap);
+            },
+
+            // 初始化
+            init:function(element){
+                element.innerHTML='';
+                var title=document.createElement("h1");
+                var uls=document.createElement("ul");
+                title.innerHTML='飞机大战v1.0';
+                element.appendChild(title);
+                for(var i=0;i<4;i++){
+                    var li=document.createElement('li');
+                    li.className='diff';
+                    // 为每一个li标签绑定一个索引，用户点击的时候根据传入的索引确定对应等级的难度
+                    li.index=i;
+                    uls.appendChild(li);
+                    li.onclick=function(e){
+                        e=e||event;
+                        Game.plane(element,e,this.index);
+                    }
+                    switch(i){
+                            case 0:
+                                li.innerHTML='简单模式';
+                                break;
+                             case 1:
+                                 li.innerHTML='一般模式';
+                                break;
+                             case 2:
+                                 li.innerHTML='困难模式';
+                                break;
+                             case 3:
+                                 li.innerHTML='地狱模式';
+                                break;
+
+                    }
+                }
+                element.appendChild(uls)
+               },
+
+               // 创建飞机
+               plane:function(element,e,index){
+                var bullet_speed;
+                switch(index){
+                    case 0:
+                        bullet_speed=200;
+                        break;
+                    case 1:
+                        bullet_speed=300;
+                        break;
+                    case 2:
+                        bullet_speed=400;
+                        break;
+                    case 3:
+                        bullet_speed=500;
+                        break;
+                }
+                // console.log(bullet_speed);
+                // 用户选择单独后首先清空wrap中的内容
+                element.innerHTML='';
+                var plane=document.createElement('div');
+                    plane.className='plane';
+                    element.appendChild(plane);
+                    plane.survival=true;
+
+                var scrollTop=document.documentElement.scrollTop?document.documentElement.scrollTop:document.body.scrollTop;
+
+                // 鼠标在界面上某处点击后，飞机中心应定位到这点。这个点的Y方向值应为鼠标在视窗点击的clientY，加上滚轮滚动后（如果滚轮滚动了的话）界面折进去的值scrollTop，再减去大盒子在浏览器中的偏移值element.offsetTop，再减去大盒子边框值，再减去飞机高度的一半，才等于飞机在大盒子中的偏移值。左偏移值同理。
+                plane.style.left=e.pageX-element.offsetLeft-10-plane.offsetWidth/2+"px";
+                plane.style.top=e.pageY-scrollTop-element.offsetTop-10-plane.offsetTop/2+"px";
+                //飞机四个方向活动范围
+                var leftMin=-plane.offsetWidth/2;
+                var leftMax=element.clientWidth-plane.offsetWidth/2;
+                var topMin=0;
+                var topMax=element.clientHeight-plane.offsetHeight;
+                document.onmousemove=function(e){
+                    e=e||event;
+                    var scrollTop=document.documentElement.scrollTop?document.documentElement.scrollTop:document.body.scrollTop;
+                    // 鼠标移动时的实时坐标
+                    var changeL=e.pageX-element.offsetLeft-10-plane.offsetWidth/2;
+                    // var changeT=e.pageY-scrollTop-element.offsetTop-10-plane.offsetTop/2;
+                    var changeT=e.clientY+scrollTop-element.offsetTop-10-plane.offsetHeight/2;
+                    // 横向最小值与计算出来的值比较，取其中的最大值作为边界；横向最大值与计算出来的值比较，取其中最小值作为边界。纵向同理
+                    changeL=Math.max(changeL,leftMin);
+                    changeL=Math.min(changeL,leftMax);
+                    changeT=Math.max(changeT,topMin);
+                    changeT=Math.min(changeT,topMax);
+                    // element.style.cursor="none";
+                    plane.style.left=changeL+"px";
+                    plane.style.top=changeT+"px";
+                }
+
+                // 创建子弹和子弹发射
+                Game.bulletTimer=setInterval(function(){
+                    var bullet=document.createElement("div");
+                        bullet.className="bullet";
+                        element.appendChild(bullet);
+                        // 飞机在盒子中的offsetLeft+飞机宽度的一半，再减去子弹宽度的一半，让子弹居中发射
+                        bullet.style.left=plane.offsetLeft+plane.offsetWidth/2-bullet.offsetWidth/2+'px';
+                        bullet.style.top=plane.offsetTop-bullet.offsetHeight/2+'px';
+
+                        Game.emission=setInterval(function(){
+                            bullet.style.top=bullet.offsetTop-10+'px';
+                            // 相对于wrap而言，子弹的offsetTop高度小于一个子弹高度时移除这颗子弹
+                               if(bullet.offsetTop<=-bullet.offsetHeight){
+                                   if(bullet.parentNode) element.removeChild(bullet);
+                                }
+                        },20);//子弹发射速度的定时器
+                // 此处为生成子弹的速度，生成子弹的定时器
+                },bullet_speed);
+                // 创建我方战机的同时创建敌军飞机
+                this.enemy(element,plane,index);
+            },
+
+
+                enemy:function(element,plane,index){
+                    var createS;
+                    var speed;
+                    switch(index){
+                        case 0:createS=500;
+                               speed=2;
+                               break;
+                       case 1:createS=400;
+                               speed=3;
+                               break;
+                       case 2:createS=300;
+                               speed=4;
+                               break;
+                       case 3:createS=200;
+                               speed=5;
+                               break;
+                    }
+                    var count=0;
+                    var rank=document.createElement('span');
+                        rank.innerHTML='分数：'+count;
+                        rank.className='score';
+                        element.appendChild(rank);
+                 Game.enemytimer=setInterval(function(){
+                    var enemy=document.createElement('div');
+                    enemy.className='enemy';
+                    element.appendChild(enemy);
+                    enemy.survival=true;
+
+                    enemy.style.left=Math.random()*element.clientWidth-enemy.offsetWidth/2+'px';
+                    enemy.style.top=-enemy.offsetHeight+'px';
+                    var temp=Math.random()*3+speed;
+                    var sliderTimer=setInterval(function(){
+                        // 下落过程中的三种死法：
+                        // 1，敌机没有被击中，飞过了wrap；
+                        // 2、敌机被子弹击中
+                        // 3、敌机与plane击中
+
+                        enemy.style.top=enemy.offsetTop+temp+'px';
+                        if(enemy.offsetTop>=element.clientHeight){
+                            clearInterval(sliderTimer);
+                            if(enemy.parentNode) element.removeChild(enemy);
+                        }
+
+                        var bullets=Game.byClass('bullet');
+                        for(var i=0;i<bullets.length;i++){
+                            if(Game.contrast(enemy,bullets[i])&&enemy.survival){
+                                count+=10;
+                                rank.innerHTML='分数：'+count;
+                                element.removeChild(bullets[i]);
+                                enemy.style.background="url('boom.gif') center center no-reapeat";
+                                enemy.survival=false;
+                                setTimeout(function(){
+                                    if(enemy.parentNode){
+                                        element.removeChild(enemy);
+                                        clearInterval(sliderTimer);
+                                    }
+                                },400);
+                            }
+                        };
+
+                            // 飞机与敌方飞机碰撞
+                            if(Game.contrast(enemy,plane)&&enemy.survival){
+                                var bullets=Game.byClass('bullet');
+                                for(var i=0;i<bullets.length;i++){
+                                    bullets[i].parentNode.removeChild(bullets[i]);
+                                }
+                                clearInterval(Game.bulletTimer);
+                                clearInterval(Game.enemytimer);
+                                clearInterval(sliderTimer);
+
+                                document.onmousemove=null;
+                                plane.style.background="url('boom.gif') center center no-repeat";
+                                enemy.style.background="url('boom.gif') center center no-repeat";
+
+                                if(plane.survival){
+                                    plane.survival=false;
+
+                                setTimeout(function(){
+                                    if(plane.parentNode) element.removeChild(plane);
+                                    if(enemy.parentNode) element.removeChild(enemy);
+                                },400);
+
+                                setTimeout(function(){
+                                    clearInterval(Game.emission);
+                                    Game.over(element,count);
+                                },800);
+                                }
+                            }
+                    },20);//下落速度的定时器
+                 },createS);//敌机生成的定时器
+                },
+
+                // 碰撞
+                contrast:function(element,contrast){
+                    var t=element.offsetTop,
+                        b=t+element.clientHeight,
+                        l=element.offsetLeft,
+                        r=l+element.offsetWidth,
+
+                        T=contrast.offsetTop,
+                        B=T+contrast.clientHeight,
+                        L=contrast.offsetLeft,
+                        R=L+contrast.offsetWidth;
+
+                        if(T>b||B<t||R<l||L>r){
+                            // 没撞到
+                            return false;
+                        }else{
+                            return true;
+                        }
+                },
+
+                over:function(element,count){
+                    // 游戏结束将wrap中所有元素清空
+                    element.innerHTML="";
+                    // 显示标题、分数和restart按钮
+                    var overTitle=document.createElement('h1');
+                        overTitle.innerHTML='GAME OVER';
+                        element.appendChild(overTitle);
+
+                    var info=document.createElement('p');
+                        info.innerHTML='您的分数为：'+count;
+                        info.className='score_info';
+                        element.appendChild(info);
+
+                    var restart=document.createElement('p');
+                        restart.innerHTML='RESTART';
+                        restart.className='restart';
+                        element.appendChild(restart);
+                        restart.onclick=function(){
+                            Game.init(element);
+                        }
+
+                },
+
+               // 获取样式的扩展方法
+               getStyle:function(element,attr){
+                return element.currentStyle ? element.currentStyle[attr]:getComputedStyle(element)[attr];
+               },
+
+               byClass:function(name,node){
+                node=node||document;
+                var arr=[];
+                if(node.getElementsByClassName){
+                    var node_temp=node.getElementsByClassName(name);
+                    for(var i=0;i<node_temp.length;i++){
+                        arr[i]=node_temp[i];
+                    }
+                }else{
+                    var alls=document.getElementsByTagName('*');
+                    for(var i=0;i<alls.length;i++){
+                        var temp=alls[i].className.split(' ');
+                        for(var k=0;k<temp.length;k++){
+                            if(temp[k].className==name){
+                                arr.push(alls[i]);
+                                break;
+                            }
+                        }
+                    }
+                }
+                return arr;
+               }
+ }
+
+
+    </script>
+</body>
+</html>

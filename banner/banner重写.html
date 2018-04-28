@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        li{
+            list-style:none;
+        }
+        /* a{
+            text-decoration:none;
+        } */
+        .wrapper{
+            width:520px;
+            height:280px;
+            margin:10px auto;
+            position:relative;
+            overflow:hidden;
+            /* 禁止用户选中 */
+            user-select:none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+
+        }
+
+        .pic img{
+            position:absolute;
+            display:none;
+
+        }
+        .page{
+
+            font-size:24px;
+            height:50px;
+            width:36px;
+            position:absolute;
+            top:50%;
+            margin-top:-25px;
+            text-align:center;
+            line-height:50px;
+            color:#fff;
+            font-weight:bold;
+        }
+        .pre{
+            left:0;
+        }
+        .next{
+            right:0;
+        }
+        .btn{
+            position:absolute;
+            bottom:10px;
+            left:50%;
+            margin-left:-27px;
+            z-index:4;
+
+        }
+        .btn li{
+            background-color:#fff;
+            float:left;
+            width:10px;
+            height:10px;
+            margin-left:8px;
+            border-radius:50%;
+
+        }
+        .btn li.on{
+            background-color:orange;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class='pic'>
+       <img src="./img/1.jpg" alt="" />
+       <img src="./img/2.jpg" alt="" />
+       <img src="./img/3.jpg" alt="" />
+    </div>
+    <span class='page pre'>&lt;</span>
+    <span class='page next'>&gt;</span>
+    <ul class='btn'>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<script>
+    var pre=document.getElementsByClassName('pre')[0];
+    var next=document.getElementsByClassName('next')[0];
+    var imgs=document.getElementsByTagName('img');
+    var btn=document.getElementsByTagName('li');
+    var wrapper=document.getElementsByClassName('wrapper')[0];
+    var index=0;
+    var timer=null;
+
+    btn[index].className='on';
+    imgs[index].style.display='block';
+
+
+
+for(var i=0;i<btn.length;i++){
+    // btn[i].index中的index和上面的index不是同一个
+    btn[i].index=i;
+    btn[i].onclick=function(){
+        var that=this;
+        checkout(function(){
+        index=that.index;
+        });
+    }
+    // 禁止图片拖拽，IE8以下用ondrag，其他用onmousedown
+    imgs[i].ondrag=imgs[i].onmousedown=function(e){
+        e=e||event;
+        e.preventDefault?e.preventDefault():window.event.returnValue=false;
+    }
+}
+
+
+    next.onclick=function(){
+        checkout(function(){
+        index++;
+        // if(index>2){index=0;}
+        index=index%3;
+            });
+    }
+     pre.onclick=function(){
+        checkout(function(){
+        index--;
+        if(index<0){index=2;}
+        });
+    }
+
+    function banner(){
+        timer=setInterval(function(){
+            checkout(function(){
+            index++;
+            // if(index>2){index=0;}
+            index=index%3;
+            });
+
+        },2000);
+    }
+
+    function checkout(callback){
+            btn[index].className='';
+            imgs[index].style.display='none';
+            callback&&callback();
+            btn[index].className='on';
+            imgs[index].style.display='block';
+    }
+
+   banner();
+
+   wrapper.onmouseover=function(){
+        clearInterval(timer);
+    }
+    wrapper.onmouseout=function(){
+        banner();
+    }
+
+</script>
+
+
+</body>
+</html>
